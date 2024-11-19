@@ -7,14 +7,14 @@ services:
       - "8080:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=db;Database=NikuDB;User Id=sa;Password=YourPassword;
+      - ConnectionStrings__DefaultConnection=Server=55cd1ecd-855d-43e4-a698-b5dd91bcd04e.hsvc.ir,32121;Database=ShahAbdolazim;User Id=sa;Password=HySLHIlckL9XFDg8THGh4JOJer73mUGG;TrustServerCertificate=True;
     depends_on:
       - db
 
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      SA_PASSWORD: "YourPassword"
+      SA_PASSWORD: "HySLHIlckL9XFDg8THGh4JOJer73mUGG"
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
