@@ -1,5 +1,5 @@
 # مرحله 1: استفاده از SDK برای ساخت پروژه
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # کپی کردن فایل‌های پروژه
