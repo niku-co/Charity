@@ -44,7 +44,7 @@ public class GoodRepository : IGoodRepository
 
     public async Task<IEnumerable<Good>> GetAll()
     {
-        var sql = @"SELECT ChildIDs, GoodID as ProductId, GoodTypeID as CategoryId, Goods.Topic, Units.Topic as Unit,
+        var sql = @"SELECT ChildIDs, GoodID as ProductId, GoodTypeID as CategoryId, Goods.Topic, Units.Topic as Unit,Goods.UnitID,
                         Description, Price, OldPrice, ActiveKiosk as Active,LayOutIndex as AccountIndex,
                         LayOutIndexKiosk as LayoutIndex FROM Goods left join Units on Goods.UnitID = Units.UnitID
                         WHERE ActiveKiosk=1";

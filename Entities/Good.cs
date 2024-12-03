@@ -13,6 +13,8 @@ public class Good
     public int LayoutIndex { get; set; }
     public string ChildIDs { get; set; }
     public string Unit { get; set; }
+
+    public int UnitID { get; set; }
     public string Description { get; set; }
     public long OldPrice { get; set; }
 

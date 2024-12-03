@@ -22,7 +22,7 @@ public class OrderRepository(IConfiguration configuration, IValidator<Order> val
         using var connection = new SqlConnection(connectionString);
         var result = await connection.QuerySingleOrDefaultAsync(sql, new { orderId = orderId });
     }
-    
+
     public async Task<string> GetLastCashTransaction(string pcName)
     {
         var sql = @"
@@ -32,7 +32,7 @@ public class OrderRepository(IConfiguration configuration, IValidator<Order> val
 			INNER JOIN PayBillTypes on  Order_PayBill.PayBillTypeID = PayBillTypes.PayBillTypeID
 			INNER JOIN Goods ON CAST(REPLACE(REPLACE(Orders.GoodIds, '{', ''), '}', '') AS int) = Goods.GoodID
             INNER JOIN KioskManager on Orders.PersonalID_KioskID = KioskManager.KioskID
-			WHERE (KioskManager.PC_Name = @pcName  ) order by Orders.OrderDate DESC, Orders.OrderTime Desc;";
+			WHERE (KioskManager.PC_Name = @pcName  ) order by Orders.OrderDate DESC, Orders.OrderTime desc, Orders.OrderNumber desc";
         var connectionString = _configuration.GetConnectionString("DefaultConnection");
 
         _logger.LogInformation("Connection string: {ConnectionString}", connectionString);
@@ -42,7 +42,7 @@ public class OrderRepository(IConfiguration configuration, IValidator<Order> val
             _logger.LogInformation("Opening SQL connection.");
             using var connection = new SqlConnection(connectionString);
             _logger.LogInformation("Executing SQL query to fetch the last cash transaction.");
-            var result = await connection.QuerySingleOrDefaultAsync<dynamic>(sql,new { pcName });
+            var result = await connection.QuerySingleOrDefaultAsync<dynamic>(sql, new { pcName });
 
             if (result == null)
             {
@@ -77,8 +77,8 @@ public class OrderRepository(IConfiguration configuration, IValidator<Order> val
     {
         var sql = @"SaveOrder";
 
-        int.TryParse(order.Number, out int count);
-        int.TryParse(order.Price, out int price);
+        double.TryParse(order.Number, out double count);
+        double.TryParse(order.Price, out double price);
 
         var parameters = new DynamicParameters();
 
@@ -122,21 +122,30 @@ public class OrderRepository(IConfiguration configuration, IValidator<Order> val
         parameters.Add("@UpdateDelivery", order.UpdateDelivery);
         parameters.Add("@OrderNumber", order.OrderNumber);
 
-
-        var connectionString = _configuration.GetConnectionString("DefaultConnection");
-        var connection = new SqlConnection(connectionString);
-        var result = await connection.QueryFirstOrDefaultAsync(sql, parameters, commandType: CommandType.StoredProcedure);
-        var data = (IDictionary<string, object>)result;
-
-        OrderResponse response = new()
+        try
         {
-            OrderNumber = (int)data.ElementAt(0).Value,
-            OrderTime = ((int)data.ElementAt(1).Value).ToString(),
-            OrderID = (Guid)data.ElementAt(2).Value,
-            OrderDate = ((int)data.ElementAt(4).Value).ToString()
-        };
+            var connectionString = _configuration.GetConnectionString("DefaultConnection");
+            var connection = new SqlConnection(connectionString);
+            var result = await connection.QueryFirstOrDefaultAsync(sql, parameters, commandType: CommandType.StoredProcedure);
+            var data = (IDictionary<string, object>)result;
 
-        return response;
+            OrderResponse response = new()
+            {
+                OrderNumber = (int)data.ElementAt(0).Value,
+                OrderTime = ((int)data.ElementAt(1).Value).ToString(),
+                OrderID = (Guid)data.ElementAt(2).Value,
+                OrderDate = ((int)data.ElementAt(4).Value).ToString()
+            };
+
+            return response;
+
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+
+
     }
 
     public async Task<Result<IEnumerable<OrderGood>, string>> UpdateDelivery(string code)
@@ -154,15 +163,15 @@ public class OrderRepository(IConfiguration configuration, IValidator<Order> val
             return "سفارشی یافت نشد!";
         }
 
-        var validationResult =  _validator.Validate(order);
-         if (!validationResult.IsValid)
+        var validationResult = _validator.Validate(order);
+        if (!validationResult.IsValid)
         {
             foreach (var error in validationResult.Errors)
             {
                 return error.ErrorMessage;
             }
         }
-        
+
         var goodIds = order.GoodIDs.Replace("{", "").Replace("}", "").Split(",");
         var numbers = order.Numbers.Replace("{", "").Replace("}", "").Split(",");
 
@@ -193,6 +202,6 @@ public class OrderRepository(IConfiguration configuration, IValidator<Order> val
             var data = (IDictionary<string, object>)result;
             return ((string)data.ElementAt(0).Value).ToString();
         }
-        return  goods;
+        return goods;
     }
 }
