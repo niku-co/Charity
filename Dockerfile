@@ -6,8 +6,8 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["NikuAPI/NikuAPI.csproj", "NikuAPI/"]
-RUN dotnet restore "NikuAPI/NikuAPI.csproj"
+COPY ["NikuAPI.csproj", "./"]
+RUN dotnet restore "NikuAPI.csproj"
 COPY . .
 WORKDIR "/src/NikuAPI"
 RUN dotnet build "NikuAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
