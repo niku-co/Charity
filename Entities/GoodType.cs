@@ -17,9 +17,9 @@ public class GoodType
     public GoodTypeSettings? Setting
     {
         set { _setting = value; }
-        get 
+        get
         {
-            if (Settings == null)  return Setting = null;
+            if (Settings == null) return Setting = null;
             var hex = BitConverter.ToString(Settings).Replace("-", "");
             //string binary = Convert.ToString(settings[0], 2);
             string binarystring = String.Join(String.Empty,
@@ -36,7 +36,8 @@ public class GoodType
                 CheckPhone = chars[3] == '1',
                 HasCoupon = chars[4] == '1',
                 General = chars[5] == '1',
-                OptionalPrint= chars[6] == '1',
+                OptionalPrint = chars[6] == '1',
+                SMS = chars[7] == '1',
             };
         }
     }
@@ -60,12 +61,14 @@ public class GoodTypeSettings
     public bool HasCoupon { get; set; }
     public bool General { get; set; }
     public bool OptionalPrint { get; set; }
+
+    public bool SMS { get; set; }
 }
 
 public class GoodTypeImage
 {
-    public int GoodTypeID { get; set;}
-    public byte[] Ima12 { get; set;}
+    public int GoodTypeID { get; set; }
+    public byte[] Ima12 { get; set; }
     public string LastImageUpdate { get; set; }
     public byte[] Gif { get; set; }
 
