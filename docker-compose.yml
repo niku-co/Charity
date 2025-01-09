@@ -7,7 +7,7 @@ services:
       - "8070:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sql.niku.co,32121;Database=javadeaeme-shosh;User Id=sa;Password=STtk0HkTmkbZooXWZBelbeHvku2iZ94P;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Server=sql.niku.co,32041;Database=javadeaeme-shosh;User Id=sa;Password=STtk0HkTmkbZooXWZBelbeHvku2iZ94P;TrustServerCertificate=True;
     depends_on:
       - db
 
