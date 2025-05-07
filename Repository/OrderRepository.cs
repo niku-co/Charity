@@ -125,8 +125,13 @@ public class OrderRepository(IConfiguration configuration, IValidator<Order> val
         try
         {
             var connectionString = _configuration.GetConnectionString("DefaultConnection");
+            if (connectionString!.IndexOf("Connect Timeout") == -1)
+            {
+                connectionString = connectionString.TrimEnd(';') + ";Connect Timeout=30;";
+            }
             var connection = new SqlConnection(connectionString);
-            var result = await connection.QueryFirstOrDefaultAsync(sql, parameters, commandType: CommandType.StoredProcedure);
+
+            var result = await connection.QueryFirstOrDefaultAsync(sql, parameters, commandType: CommandType.StoredProcedure, commandTimeout: 30);
             var data = (IDictionary<string, object>)result;
 
             OrderResponse response = new()
