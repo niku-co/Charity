@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using NikuAPI.IRepository;
 using System.Data.SqlClient;
 
@@ -14,10 +14,14 @@ public class KioskRepository : IKioskRepository
 
     public async Task<int> GetKioskId(string ipAddress, string pcName)
     {
-        var sql = @"SELECT KioskID FROM KioskManager WHERE Active=1 AND (PC_Name=@pcName OR IP=@ipAddress)";
+        var sql = @"SELECT KioskID FROM KioskManager WHERE Active=1 AND (PC_Name=@pcName)";
         var connectionString = _configuration.GetConnectionString("DefaultConnection");
         using var connection = new SqlConnection(connectionString);
-        var result = await connection.QueryFirstOrDefaultAsync<int>(sql, new {pcName = pcName, ipAddress = ipAddress});
+        var result = await connection.QueryFirstOrDefaultAsync<int>(sql, new { pcName = pcName });
+        if (result > 0)
+            return result;
+        var sqlBytIp = @"SELECT KioskID FROM KioskManager WHERE Active=1 AND (IP=@ipAddress)";
+        result = await connection.QueryFirstOrDefaultAsync<int>(sqlBytIp, new { ipAddress = ipAddress });
         return result;
     }
 }
