@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NikuAPI.Entities;
 
@@ -10,6 +10,7 @@ public class Good
     public long Price { get; set; }
     public bool Active { get; set; }
     public int AccountIndex { get; set; }
+    public int? Code { get; set; }
     public int LayoutIndex { get; set; }
     public string ChildIDs { get; set; }
     public string Unit { get; set; }
