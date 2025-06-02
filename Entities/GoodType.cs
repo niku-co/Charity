@@ -1,47 +1,84 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace NikuAPI.Entities;
 
-public class Good
+public class GoodType
 {
-    public int ProductId { get; set; }
-    public int CategoryId { get; set; }
+    public int GoodTypeID { get; set; }
     public string Topic { get; set; }
-    public long Price { get; set; }
-    public bool Active { get; set; }
-    public int AccountIndex { get; set; }
-    public int? Code { get; set; }
-    public int LayoutIndex { get; set; }
-    public string ChildIDs { get; set; }
-    public string Unit { get; set; }
+    public int CategoryID { get; set; }
+    public bool ActiveKiosk { get; set; }
+    public int? LayOutID { get; set; }
+    public int LayOutIndex { get; set; }
+    public byte[]? KioskIDs { get; set; }
+    public bool Secondary { get; set; }
+    public string? PageManagement { get; set; }
+    public string? OfferManagement { get; set; }
+    private GoodTypeSettings? _setting;
 
-    public int UnitID { get; set; }
-    public string Description { get; set; }
-    public long OldPrice { get; set; }
+    public GoodTypeSettings? Setting
+    {
+        set { _setting = value; }
+        get
+        {
+            if (Settings == null) return Setting = null;
+            var hex = BitConverter.ToString(Settings).Replace("-", "");
+            //string binary = Convert.ToString(settings[0], 2);
+            string binarystring = String.Join(String.Empty,
+                  hex.Select(
+                    c => Convert.ToString(Convert.ToInt32(c.ToString(), 16), 2).PadLeft(4, '0')
+                  )
+                ).Substring(0, 8);
+            string binarystring1 = String.Join(String.Empty,
+                  hex.Select(
+                    c => Convert.ToString(Convert.ToInt32(c.ToString(), 16), 2).PadLeft(4, '0')
+                  )
+                ).Substring(8, 8);
+            var chars = binarystring.Reverse().Select(i => i).ToArray();
+            var chars2 = binarystring1.Reverse().Select(i => i).ToArray();
+            return Setting = new()
+            {
+                Payment = chars[0] == '1',
+                HasPrice = chars[1] == '1',
+                CheckStore = chars[2] == '1',
+                CheckPhone = chars[3] == '1',
+                HasCoupon = chars[4] == '1',
+                General = chars[5] == '1',
+                OptionalPrint = chars[6] == '1',
+                SMS = chars[7] == '1',
+                HidePrice = chars2[0] == '1',
+            };
+        }
+    }
 
-    [NotMapped]
-    public Good Parent { get; set; }
+    private byte[]? Settings { get; set; }
+    public string? Message { get; set; }
+    private bool _visited = true;
 
-    private List<Good> _subProducts = new();
-    [NotMapped]
-    public List<Good> SubProducts { get => _subProducts; set => _subProducts = value; }
+    public bool Visited
+    {
+        get { return _visited; }
+        set { _visited = value; }
+    }
+}
+public class GoodTypeSettings
+{
+    public bool Payment { get; set; }
+    public bool HasPrice { get; set; }
+    public bool CheckStore { get; set; }
+    public bool CheckPhone { get; set; }
+    public bool HasCoupon { get; set; }
+    public bool General { get; set; }
+    public bool OptionalPrint { get; set; }
 
-    private bool _stock = true;
-    [NotMapped]
-    public bool Stock { get => _stock; set => _stock = value; }
+    public bool SMS { get; set; }
+    public bool HidePrice { get; set; }
+
 }
 
-public class GoodImage
+public class GoodTypeImage
 {
-    public int GoodID { get; set; }
-    public byte[] Ima { get; set; }
-    public byte[] Ima_Large { get; set; }
+    public int GoodTypeID { get; set; }
+    public byte[] Ima12 { get; set; }
     public string LastImageUpdate { get; set; }
-}
+    public byte[] Gif { get; set; }
 
-public class OrderGood
-{
-    public int GoodID { get; set; }
-    public string Topic { get; set; }
-    public string Numbers { get; set; }
 }
