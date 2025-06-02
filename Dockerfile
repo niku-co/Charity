@@ -1,13 +1,27 @@
-# مرحله بیلد
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-COPY ["NikuAPI.csproj", "./"]
-RUN dotnet restore
-COPY . .
-RUN dotnet publish -c Release -o /app
-
-# مرحله اجرا
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+# پایه‌ی اجرا با تنظیمات سفارشی
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER $APP_UID
 WORKDIR /app
-COPY --from=build /app ./
+EXPOSE 8080
+EXPOSE 8081
+
+# مرحله‌ی بیلد
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["NikuAPI.csproj", "NikuAPI/"]
+RUN dotnet restore "NikuAPI.csproj"
+COPY . .
+WORKDIR "/src/NikuAPI"
+RUN dotnet build "NikuAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# مرحله‌ی پابلیش
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "NikuAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+# مرحله‌ی نهایی اجرا
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "NikuAPI.dll"]
