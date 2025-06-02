@@ -19,7 +19,7 @@ public class VersionController : ControllerBase
     public async Task<ActionResult<string>> GetVersion()
     {
 
-        return Ok("1.1.3");
+        return Ok("1.1.7");
 
     }
 }
