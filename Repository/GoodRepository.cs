@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using NikuAPI.Entities;
 using NikuAPI.IRepository;
 using System.Data;
@@ -45,7 +45,7 @@ public class GoodRepository : IGoodRepository
     public async Task<IEnumerable<Good>> GetAll()
     {
         var sql = @"SELECT ChildIDs, GoodID as ProductId, GoodTypeID as CategoryId, Goods.Topic, Units.Topic as Unit,Goods.UnitID,
-                        Description, Price, OldPrice, ActiveKiosk as Active,LayOutIndex as AccountIndex,
+                        Description, Price, OldPrice, ActiveKiosk as Active,LayOutIndex as AccountIndex,Code,
                         LayOutIndexKiosk as LayoutIndex FROM Goods left join Units on Goods.UnitID = Units.UnitID
                         WHERE ActiveKiosk=1";
         var connectionString = _configuration.GetConnectionString("DefaultConnection");
