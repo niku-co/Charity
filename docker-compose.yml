@@ -7,14 +7,14 @@ services:
       - "8070:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=Server=3c0ad2a8-995b-4a41-b07a-1c223d485b91.hsvc.ir,32041;Database=nikuir_DBSshohada;User Id=sa;Password=STtk0HkTmkbZooXWZBelbeHvku2iZ94P;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Server=Server=c901884d-10d0-4b98-b5d0-e0d930fd85ad.hsvc.ir,30802;Database=masjedShohada;User Id=sa;Password=3zVeYopmN2uUe6aqAyGoXKwZFEa1SjAD;TrustServerCertificate=True;
     depends_on:
       - db
 
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      SA_PASSWORD: "HySLHIlckL9XFDg8THGh4JOJer73mUGG"
+      SA_PASSWORD: "3zVeYopmN2uUe6aqAyGoXKwZFEa1SjAD"
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
