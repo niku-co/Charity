@@ -7,7 +7,7 @@ services:
       - "8070:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=55cd1ecd-855d-43e4-a698-b5dd91bcd04e.hsvc.ir,32121;Database=ShahAbdolazim;User Id=sa;Password=HySLHIlckL9XFDg8THGh4JOJer73mUGG;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Server=d330ec6b-2ed5-4c19-aa71-a9373a8c4f91.hsvc.ir,32335;Database=DBKham;User Id=sa;Password=PaN5DDK73f4USdysMqynBt8WUB75q3jY;TrustServerCertificate=True;
     depends_on:
       - db
 
